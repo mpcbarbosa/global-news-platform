@@ -1,0 +1,52 @@
+services:
+  - type: web
+    name: gobii-news-api
+    runtime: node
+    region: frankfurt
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: node dist/scripts/migrate.js && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gobii-news-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: gobii-news-redis
+          type: redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: "7d"
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: "30d"
+      - key: WEBHOOK_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: LOG_LEVEL
+        value: "info"
+    healthCheckPath: /health
+    autoDeploy: true
+
+  - type: redis
+    name: gobii-news-redis
+    plan: starter
+    region: frankfurt
+    maxmemoryPolicy: allkeys-lru
+
+databases:
+  - name: gobii-news-db
+    plan: starter
+    region: frankfurt
+    databaseName: gobii_news
+    user: gobii_user
+    postgresMajorVersion: "16"
