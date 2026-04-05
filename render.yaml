@@ -5,7 +5,7 @@ services:
     region: frankfurt
     plan: starter
     buildCommand: npm install && npm run build
-    startCommand: node dist/scripts/migrate.js && npm start
+    startCommand: node dist/scripts/migrate.js && node dist/src/index.js
     envVars:
       - key: NODE_ENV
         value: production

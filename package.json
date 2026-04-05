@@ -2,13 +2,13 @@
   "name": "gobii-news-api",
   "version": "1.0.0",
   "description": "Gobii News - Multilingual News Aggregation Platform API",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "migrate": "ts-node scripts/migrate.ts",
-    "seed": "ts-node scripts/seed.ts",
+    "migrate": "node dist/scripts/migrate.js",
+    "seed": "node dist/scripts/seed.js",
     "lint": "eslint src/**/*.ts",
     "typecheck": "tsc --noEmit"
   },
