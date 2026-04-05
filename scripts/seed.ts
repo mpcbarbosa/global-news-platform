@@ -18,7 +18,8 @@ async function seed() {
   });
 
   try {
-    const seedFile = path.join(__dirname, '..', 'migrations', '002_seed_data.sql');
+    const seedFile = path.resolve(__dirname, '..', '..', 'migrations', '002_seed_data.sql');
+    console.log('🌱 Loading seed file from:', seedFile);
     const sql = fs.readFileSync(seedFile, 'utf8');
 
     console.log('🌱 Running seed data...');

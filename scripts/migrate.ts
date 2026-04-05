@@ -18,7 +18,6 @@ async function migrate() {
   });
 
   try {
-    // Create migrations tracking table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS _migrations (
         id SERIAL PRIMARY KEY,
@@ -27,10 +26,21 @@ async function migrate() {
       )
     `);
 
-    const migrationsDir = path.join(__dirname, '..', 'migrations');
+    // In compiled JS (dist/scripts/migrate.js), __dirname = <root>/dist/scripts
+    // We need to go up 2 levels to project root, then into migrations/
+    const migrationsDir = path.resolve(__dirname, '..', '..', 'migrations');
+    console.log('📂 Looking for migrations in:', migrationsDir);
+
+    if (!fs.existsSync(migrationsDir)) {
+      console.error('❌ Migrations directory not found:', migrationsDir);
+      process.exit(1);
+    }
+
     const files = fs.readdirSync(migrationsDir)
       .filter((f) => f.endsWith('.sql'))
       .sort();
+
+    console.log(`📋 Found ${files.length} migration files`);
 
     const executed = await pool.query('SELECT name FROM _migrations ORDER BY name');
     const executedNames = new Set(executed.rows.map((r: { name: string }) => r.name));
